@@ -14,5 +14,5 @@ Hit Enter
 
 ![](image/2.png)
 
-![](images/3.png)
+![](image/3.png)
 
