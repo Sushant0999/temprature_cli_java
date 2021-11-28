@@ -3,8 +3,8 @@ This is a temprature cli app in JAVA using API.
 
 To use this project first of all you have to import a json.jar to parse json in java.
 
-Run this project in intelliJ IDEA for smooth experience.[
-******IMPORTANT********]
+Run this project in intelliJ IDEA for smooth experience.
+[******IMPORTANT********]
 To use this project first of all you have to import a json library as a dependency in your IDE(like VS code, IntelljIDE).
 
 step 1:
