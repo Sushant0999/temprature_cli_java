@@ -1,6 +1,8 @@
 # temprature_cli_java
 This is a temprature cli app in JAVA using API.
 
+You can download and run api.jar in command line by using command "java -jar (file_name)" without quotes...
+
 To use this project first of all you have to import a json.jar to parse json in java.
 
 ==========IMPORTANT==========
