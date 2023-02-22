@@ -1,10 +1,15 @@
 package com.company;
 
-import org.json.*;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.net.URI;
-import java.net.http.*;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.Scanner;
+
 
 public class Main {
 
@@ -19,9 +24,9 @@ public class Main {
                 " | |____| | | | ||  __/ |    | |____| | |_| |_| | | |\\  | (_| | | | | | |  __/ \n" +
                 " |______|_| |_|\\__\\___|_|     \\_____|_|\\__|\\__, | |_| \\_|\\__,_|_| |_| |_|\\___| \n" +
                 "                                            __/ |                              \n" +
-                "                                           |___/                               ");
+                "                                           |___/                               "+"\nCREATED BY https://github.com/Sushant0999");
         String city = s.nextLine();
-        space(city);
+        city = space(city);
         String rawUrl = "https://api.openweathermap.org/data/2.5/weather?q="+city+"&appid=59e30983d7b7f60075b0b823a0b41e1b";
         var url = rawUrl;
         //print Actual Url
@@ -77,7 +82,7 @@ public class Main {
 
 
     }
-    static void space(String s){
+    static String space(String s){
         StringBuilder sb = new StringBuilder();
         for(int i=0;i<s.length();i++){
             if(s.charAt(i)==' '){
@@ -87,6 +92,7 @@ public class Main {
                 sb.append(s.charAt(i));
             }
         }
+        return sb.toString();
     }
 }
 
