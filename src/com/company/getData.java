@@ -1,8 +1,8 @@
 package com.company;
 
-class getData{
-    void logo(int i){
-        if(i >= 200 && i <= 232){
+class getData {
+    void logo(int i) {
+        if (i >= 200 && i <= 232) {
             System.out.println("Thunderstorm");
             System.out.println("\n");
             System.out.println("    ___(                        )\n" +
@@ -19,7 +19,7 @@ class getData{
                     " //\n" +
                     "/'");
         }
-        if(i >= 300 && i <= 321){
+        if (i >= 300 && i <= 321) {
             System.out.println("Drizzle");
             System.out.println("\n");
             System.out.println("                         000      00\n" +
@@ -38,7 +38,7 @@ class getData{
                     "        / / / / / / / / / / / /\n" +
                     "        / / / / / / / / / /\n");
         }
-        if(i >= 500 && i <= 531){
+        if (i >= 500 && i <= 531) {
             System.out.println("Rain");
             System.out.println("\n");
             System.out.println("\"                         000      00\\n\" +\n" +
@@ -58,7 +58,7 @@ class getData{
                     "                    \"        / / / / / / / / / /\\n\"");
 
         }
-        if (i >= 600 && i <= 622){
+        if (i >= 600 && i <= 622) {
             System.out.println("Snow");
             System.out.println("\n");
             System.out.println(".      *    *           *.       *   .                      *     .\n" +
@@ -70,7 +70,7 @@ class getData{
                     "      /    \\   /    \\          *   |       |  )),`   (   .  )     *\n" +
                     "   *   `||` ..  `||`   . *.   ... ==========='`   ... '--`-` ... * jb .");
         }
-        if (i >= 700 && i <= 781) {
+        if (i >= 701 && i <= 781) {
             System.out.println("Atmosphere");
             System.out.println("\n");
             System.out.println("     .-.                                    ,-.\n" +
@@ -95,7 +95,7 @@ class getData{
                     ".:.:.:.:.:.:.:.:`--'.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.\n" +
                     ".....................................................");
         }
-        if (i >= 782) {
+        if (i >= 801 && i <= 899) {
             System.out.println("Clouds");
             System.out.println("\n");
             System.out.println("              .\n" +
@@ -118,7 +118,7 @@ class getData{
                     "                                        \t\n" +
                     "--..,___.--,--'`,---..-.--+--.,,-,,..._.--..-._.-a:f--.");
         }
-        if (i == 800){
+        if (i == 800) {
             System.out.println("Clear Sky");
             System.out.println("\n");
             System.out.println("            :\n" +
@@ -137,27 +137,31 @@ class getData{
     }
 
 
-    void min(String min){
+    void min(String min) {
         float f = Float.parseFloat(min);
-        f = (f-273.15f);
-        System.out.println("Minimum Temprature this hour: "+String.format("%.2f",f)+"°C");
+        f = (f - 273.15f);
+        System.out.println("Minimum Temprature this hour: " + String.format("%.2f", f) + "°C");
     }
-    void max(String max){
+
+    void max(String max) {
         float f = Float.parseFloat(max);
-        f = (f-273.15f);
-        System.out.println("Maximum Temprature this hour: "+String.format("%.2f",f)+"°C");
+        f = (f - 273.15f);
+        System.out.println("Maximum Temprature this hour: " + String.format("%.2f", f) + "°C");
     }
-    void curr(String curr){
+
+    void curr(String curr) {
         float f = Float.parseFloat(curr);
-        f = (f-273.15f);
-        System.out.println("Current Temprature: "+String.format("%.2f",f)+"°C");
+        f = (f - 273.15f);
+        System.out.println("Current Temprature: " + String.format("%.2f", f) + "°C");
     }
-    void humid(String humid){
-        System.out.println("Humidity: "+humid+"%");
+
+    void humid(String humid) {
+        System.out.println("Humidity: " + humid + "%");
     }
-    void wind(String speed){
+
+    void wind(String speed) {
         float f = Float.parseFloat(speed);
-        f = (f*3.6f);
-        System.out.println("Wind Speed "+String.format("%.2f",f)+"km/h");
+        f = (f * 3.6f);
+        System.out.println("Wind Speed " + String.format("%.2f", f) + "km/h");
     }
 }

@@ -15,7 +15,7 @@ public class Main {
 
 
     public static void main(String[] args) throws IOException, InterruptedException {
-	// write your code here
+        // write your code here
         Scanner s = new Scanner(System.in);
         System.out.println("  ______       _               _____ _ _           _   _                       \n" +
                 " |  ____|     | |             / ____(_) |         | \\ | |                      \n" +
@@ -24,10 +24,10 @@ public class Main {
                 " | |____| | | | ||  __/ |    | |____| | |_| |_| | | |\\  | (_| | | | | | |  __/ \n" +
                 " |______|_| |_|\\__\\___|_|     \\_____|_|\\__|\\__, | |_| \\_|\\__,_|_| |_| |_|\\___| \n" +
                 "                                            __/ |                              \n" +
-                "                                           |___/                               "+"\nCREATED BY https://github.com/Sushant0999");
+                "                                           |___/                               " + "\nCREATED BY https://github.com/Sushant0999");
         String city = s.nextLine();
         city = space(city);
-        String rawUrl = "https://api.openweathermap.org/data/2.5/weather?q="+city+"&appid=59e30983d7b7f60075b0b823a0b41e1b";
+        String rawUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=59e30983d7b7f60075b0b823a0b41e1b";
         var url = rawUrl;
         //print Actual Url
 //        System.out.println(rawUrl);
@@ -36,7 +36,7 @@ public class Main {
         var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 //        var data = response.toString();
 //        System.out.println(response.body());
-        String result  = response.body().toString();
+        String result = response.body().toString();
         JSONObject jsonObject = new JSONObject(result);
         //will print data avilaible in main.json
 //        System.out.println(jsonObject.get("main"));
@@ -51,11 +51,11 @@ public class Main {
             Thread.sleep(500);
         }
         Thread.sleep(500);
-        System.out.println("100% "+"\n"+"Done");
+        System.out.println("100% " + "\n" + "Done");
         Thread.sleep(500);
         System.out.println("Loading Complete");
         //Name
-        System.out.println("City : "+ jsonObject.get("name"));
+        System.out.println("City : " + jsonObject.get("name"));
         System.out.println("\n");
 
         //Logo
@@ -82,13 +82,13 @@ public class Main {
 
 
     }
-    static String space(String s){
+
+    static String space(String s) {
         StringBuilder sb = new StringBuilder();
-        for(int i=0;i<s.length();i++){
-            if(s.charAt(i)==' '){
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == ' ') {
                 sb.append("%20");
-            }
-            else{
+            } else {
                 sb.append(s.charAt(i));
             }
         }
