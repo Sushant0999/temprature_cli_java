@@ -140,12 +140,12 @@ class getData{
     void min(String min){
         float f = Float.parseFloat(min);
         f = (f-273.15f);
-        System.out.println("Minimum Temprature: "+String.format("%.2f",f)+"°C");
+        System.out.println("Minimum Temprature this hour: "+String.format("%.2f",f)+"°C");
     }
     void max(String max){
         float f = Float.parseFloat(max);
         f = (f-273.15f);
-        System.out.println("Maximum Temprature: "+String.format("%.2f",f)+"°C");
+        System.out.println("Maximum Temprature this hour: "+String.format("%.2f",f)+"°C");
     }
     void curr(String curr){
         float f = Float.parseFloat(curr);
