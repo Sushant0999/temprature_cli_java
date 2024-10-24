@@ -8,6 +8,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Map;
 import java.util.Scanner;
 
 
@@ -25,9 +26,10 @@ public class Main {
                 " |______|_| |_|\\__\\___|_|     \\_____|_|\\__|\\__, | |_| \\_|\\__,_|_| |_| |_|\\___| \n" +
                 "                                            __/ |                              \n" +
                 "                                           |___/                               " + "\nCREATED BY https://github.com/Sushant0999");
+
         String city = s.nextLine();
         city = space(city);
-        String rawUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=59e30983d7b7f60075b0b823a0b41e1b";
+        String rawUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid={{OPEN_WEATHER_API_KEY}}";
         var url = rawUrl;
         //print Actual Url
 //        System.out.println(rawUrl);
