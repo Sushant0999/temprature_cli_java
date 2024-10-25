@@ -1,6 +1,7 @@
 package com.company;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import redis.clients.jedis.Jedis;
 
@@ -66,33 +67,62 @@ public class Main {
             }
         }
         if (resp == null && isFourHoursDiff) {
-            System.out.println("Fetching Data...");
+            System.out.println("Fetching Data");
             city = space(city);
             String rawUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid={{OPEN_WEATHER_API_TOKEN}}";
-            var url = rawUrl;
-            var request = HttpRequest.newBuilder().GET().uri(URI.create(url)).build();
+            var request = HttpRequest.newBuilder().GET().uri(URI.create(rawUrl)).build();
             var client = HttpClient.newBuilder().build();
             var response = client.send(request, HttpResponse.BodyHandlers.ofString());
             String result = response.body();
             result = result.concat("time ").concat(getCurrentTime());
-            try{
+            try {
                 jedis.set(city.toLowerCase(), result);
+                jsonObject = new JSONObject(result);
+                jsonObject1 = new JSONObject(jsonObject.get("main").toString());
+                jsonObject2 = new JSONObject(jsonObject.get("wind").toString());
+                jsonArray = new JSONArray(jsonObject.get("weather").toString());
+            }catch (NullPointerException e){
+                System.out.println("City doesn't exist");
+                System.exit(400);
+            }catch (JSONException e){
+                System.out.println("Unable to find city..");
+                System.exit(404);
             }catch (Exception e){
                 System.out.println("Unable to persist data..");
             }
-            jsonObject = new JSONObject(result);
-            jsonObject1 = new JSONObject(jsonObject.get("main").toString());
-            jsonObject2 = new JSONObject(jsonObject.get("wind").toString());
-            jsonArray = new JSONArray(jsonObject.get("weather").toString());
         }
 
         //object Created
         getData data1 = new getData();
         if (resp == null) {
-            for (int i = 0; i < 10; i++) {
-                System.out.print(".");
-                Thread.sleep(500);
+//            for (int i = 0; i < 10; i++) {
+//                System.out.print(".");
+//                Thread.sleep(500);
+//            }
+//            String[] spinner = {"|", "/", "-", "\\"}; // Spinner frames
+//            int delay = 100; // Delay in milliseconds between frames
+//
+//            for (int i = 0; i < 50; i++) { // Loop for demonstration
+//                System.out.print("\rLoading " + spinner[i % spinner.length]);
+//                Thread.sleep(delay); // Pause between frames
+//            }
+            System.out.print("\rDone!         \n");
+            int total = 50; // Total length of the progress bar
+            for (int i = 0; i <= total; i++) {
+                int percent = (i * 100) / total;
+                StringBuilder progressBar = new StringBuilder();
+
+                progressBar.append("\r["); // Start of progress bar
+                for (int j = 0; j < total; j++) {
+                    if (j < i) progressBar.append("#");
+                    else progressBar.append(" ");
+                }
+                progressBar.append("] ").append(percent).append("%"); // End of progress bar
+
+                System.out.print(progressBar); // Print the progress bar
+                Thread.sleep(100); // Delay for demonstration
             }
+            System.out.println("\nComplete!");
         }
         Thread.sleep(500);
         System.out.println("100% " + "\n" + "Done");
