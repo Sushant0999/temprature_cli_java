@@ -2,20 +2,36 @@ package com.company;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class Main {
 
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException, ParseException {
+        Jedis jedis = null;
+        try {
+            // Connect to Redis
+            String redisUri = "{{REDIS_URI}}";
+            jedis = new Jedis(redisUri);
+            System.out.println("Connection to server successful");
+        } catch (Exception e) {
+            System.err.println("Redis is offline..");
+        }
+
         // write your code here
         Scanner s = new Scanner(System.in);
         System.out.println("  ______       _               _____ _ _           _   _                       \n" +
@@ -26,31 +42,57 @@ public class Main {
                 " |______|_| |_|\\__\\___|_|     \\_____|_|\\__|\\__, | |_| \\_|\\__,_|_| |_| |_|\\___| \n" +
                 "                                            __/ |                              \n" +
                 "                                           |___/                               " + "\nCREATED BY https://github.com/Sushant0999");
-
+        boolean isFourHoursDiff = true;
         String city = s.nextLine();
-        city = space(city);
-        String rawUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid={{OPEN_WEATHER_API_KEY}}";
-        var url = rawUrl;
-        //print Actual Url
-//        System.out.println(rawUrl);
-        var request = HttpRequest.newBuilder().GET().uri(URI.create(url)).build();
-        var client = HttpClient.newBuilder().build();
-        var response = client.send(request, HttpResponse.BodyHandlers.ofString());
-//        var data = response.toString();
-//        System.out.println(response.body());
-        String result = response.body().toString();
-        JSONObject jsonObject = new JSONObject(result);
-        //will print data avilaible in main.json
-//        System.out.println(jsonObject.get("main"));
-        JSONObject jsonObject1 = new JSONObject(jsonObject.get("main").toString());
-        JSONObject jsonObject2 = new JSONObject(jsonObject.get("wind").toString());
-        JSONArray jsonArray = new JSONArray(jsonObject.get("weather").toString());
-        //        System.out.println(jsonObject1.get("temp"));
+        assert jedis != null;
+        String resp = null;
+        try{
+           resp = jedis.get(city.toLowerCase());
+        }catch (Exception e){
+            System.out.println("Unable to retrieve data..");
+        }
+        JSONObject jsonObject = null;
+        JSONObject jsonObject1 = null;
+        JSONObject jsonObject2 = null;
+        JSONArray jsonArray = null;
+        if (resp != null) {
+            String time = extractTime(resp);
+            isFourHoursDiff = isTimeDifferenceFourHours(time);
+            if (!isFourHoursDiff) {
+                jsonObject = new JSONObject(resp);
+                jsonObject1 = new JSONObject(jsonObject.get("main").toString());
+                jsonObject2 = new JSONObject(jsonObject.get("wind").toString());
+                jsonArray = new JSONArray(jsonObject.get("weather").toString());
+            }
+        }
+        if (resp == null && isFourHoursDiff) {
+            System.out.println("Fetching Data...");
+            city = space(city);
+            String rawUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid={{OPEN_WEATHER_API_TOKEN}}";
+            var url = rawUrl;
+            var request = HttpRequest.newBuilder().GET().uri(URI.create(url)).build();
+            var client = HttpClient.newBuilder().build();
+            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            String result = response.body();
+            result = result.concat("time ").concat(getCurrentTime());
+            try{
+                jedis.set(city.toLowerCase(), result);
+            }catch (Exception e){
+                System.out.println("Unable to persist data..");
+            }
+            jsonObject = new JSONObject(result);
+            jsonObject1 = new JSONObject(jsonObject.get("main").toString());
+            jsonObject2 = new JSONObject(jsonObject.get("wind").toString());
+            jsonArray = new JSONArray(jsonObject.get("weather").toString());
+        }
+
         //object Created
         getData data1 = new getData();
-        for (int i = 0; i < 10; i++) {
-            System.out.print(".");
-            Thread.sleep(500);
+        if (resp == null) {
+            for (int i = 0; i < 10; i++) {
+                System.out.print(".");
+                Thread.sleep(500);
+            }
         }
         Thread.sleep(500);
         System.out.println("100% " + "\n" + "Done");
@@ -82,7 +124,11 @@ public class Main {
         data1.wind(jsonObject2.get("speed").toString());
         System.out.println("\n");
 
-
+        try{
+            jedis.close();
+        }catch (Exception e){
+            System.out.println("Exit....");
+        }
     }
 
     static String space(String s) {
@@ -96,5 +142,50 @@ public class Main {
         }
         return sb.toString();
     }
+
+    static String getCurrentTime() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return dateFormat.format(new Date());
+    }
+
+    public static boolean isTimeDifferenceFourHours(String storedTime) throws ParseException {
+        // Format of the stored time
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        // Parse the stored time into a Date object
+        Date storedDate = dateFormat.parse(storedTime);
+
+        // Get the current time
+        Date currentTime = new Date();
+
+        // Calculate the time difference in milliseconds
+        long timeDifferenceMillis = currentTime.getTime() - storedDate.getTime();
+
+        // Convert the time difference to hours
+        long timeDifferenceHours = TimeUnit.MILLISECONDS.toHours(timeDifferenceMillis);
+
+        // Return true if the time difference is 4 hours or more
+        return timeDifferenceHours >= 4;
+    }
+
+    // Method to extract the time from a given string
+    public static String extractTime(String input) {
+        // Regular expression pattern to match the time in the format yyyy-MM-dd HH:mm:ss
+        String timePattern = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}";
+
+        // Create a Pattern object
+        Pattern pattern = Pattern.compile(timePattern);
+
+        // Create a Matcher object
+        Matcher matcher = pattern.matcher(input);
+
+        // Find and return the matched time string
+        if (matcher.find()) {
+            return matcher.group(0);  // Return the first match
+        } else {
+            return "No time found";
+        }
+    }
+
 }
 
