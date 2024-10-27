@@ -26,7 +26,7 @@ public class Main {
         Jedis jedis = null;
         try {
             // Connect to Redis
-            String redisUri = "{{REDIS_URI}}";
+            String redisUri = "redisUri";
             jedis = new Jedis(redisUri);
             System.out.println("Connection to server successful");
         } catch (Exception e) {
@@ -66,11 +66,12 @@ public class Main {
                 jsonArray = new JSONArray(jsonObject.get("weather").toString());
             }
         }
-        if (resp == null && isFourHoursDiff) {
+        if (isFourHoursDiff || resp == null) {
             System.out.println("Fetching Data");
             city = space(city);
-            String rawUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid={{OPEN_WEATHER_API_TOKEN}}";
-            var request = HttpRequest.newBuilder().GET().uri(URI.create(rawUrl)).build();
+            String rawUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid={{API_KEY_OPEN_WEATHER}}";
+            var url = rawUrl;
+            var request = HttpRequest.newBuilder().GET().uri(URI.create(url)).build();
             var client = HttpClient.newBuilder().build();
             var response = client.send(request, HttpResponse.BodyHandlers.ofString());
             String result = response.body();
@@ -91,21 +92,8 @@ public class Main {
                 System.out.println("Unable to persist data..");
             }
         }
-
-        //object Created
         getData data1 = new getData();
-        if (resp == null) {
-//            for (int i = 0; i < 10; i++) {
-//                System.out.print(".");
-//                Thread.sleep(500);
-//            }
-//            String[] spinner = {"|", "/", "-", "\\"}; // Spinner frames
-//            int delay = 100; // Delay in milliseconds between frames
-//
-//            for (int i = 0; i < 50; i++) { // Loop for demonstration
-//                System.out.print("\rLoading " + spinner[i % spinner.length]);
-//                Thread.sleep(delay); // Pause between frames
-//            }
+        if (resp != null) {
             System.out.print("\rDone!         \n");
             int total = 50; // Total length of the progress bar
             for (int i = 0; i <= total; i++) {
@@ -179,39 +167,20 @@ public class Main {
     }
 
     public static boolean isTimeDifferenceFourHours(String storedTime) throws ParseException {
-        // Format of the stored time
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-        // Parse the stored time into a Date object
         Date storedDate = dateFormat.parse(storedTime);
-
-        // Get the current time
         Date currentTime = new Date();
-
-        // Calculate the time difference in milliseconds
         long timeDifferenceMillis = currentTime.getTime() - storedDate.getTime();
-
-        // Convert the time difference to hours
         long timeDifferenceHours = TimeUnit.MILLISECONDS.toHours(timeDifferenceMillis);
-
-        // Return true if the time difference is 4 hours or more
         return timeDifferenceHours >= 4;
     }
 
-    // Method to extract the time from a given string
     public static String extractTime(String input) {
-        // Regular expression pattern to match the time in the format yyyy-MM-dd HH:mm:ss
         String timePattern = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}";
-
-        // Create a Pattern object
         Pattern pattern = Pattern.compile(timePattern);
-
-        // Create a Matcher object
         Matcher matcher = pattern.matcher(input);
-
-        // Find and return the matched time string
         if (matcher.find()) {
-            return matcher.group(0);  // Return the first match
+            return matcher.group(0);
         } else {
             return "No time found";
         }
