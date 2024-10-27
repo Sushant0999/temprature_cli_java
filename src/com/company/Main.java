@@ -26,7 +26,7 @@ public class Main {
         Jedis jedis = null;
         try {
             // Connect to Redis
-            String redisUri = "redisUri";
+            String redisUri = "";
             jedis = new Jedis(redisUri);
             System.out.println("Connection to server successful");
         } catch (Exception e) {
@@ -60,14 +60,15 @@ public class Main {
             String time = extractTime(resp);
             isFourHoursDiff = isTimeDifferenceFourHours(time);
             if (!isFourHoursDiff) {
+                System.out.println("Retrieving Data...");
                 jsonObject = new JSONObject(resp);
                 jsonObject1 = new JSONObject(jsonObject.get("main").toString());
                 jsonObject2 = new JSONObject(jsonObject.get("wind").toString());
                 jsonArray = new JSONArray(jsonObject.get("weather").toString());
             }
         }
-        if (isFourHoursDiff || resp == null) {
-            System.out.println("Fetching Data");
+        if (isFourHoursDiff) {
+            System.out.println("Fetching Data....");
             city = space(city);
             String rawUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid={{API_KEY_OPEN_WEATHER}}";
             var url = rawUrl;
